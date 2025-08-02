@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>焚王封禁</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-color: #1a1a1a; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff; 
+            font-family: "SimHei", "Microsoft YaHei", sans-serif;
+            overflow: hidden; 
+            position: relative; 
+        }
+
+        /* 樱花容器 */
+        .sakura-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; 
+            z-index: 5; 
+        }
+
+        .sakura {
+            position: absolute;
+            border-radius: 50% 50% 40% 40%;
+            opacity: 0;
+            animation: fall ease-out infinite;
+            will-change: transform, opacity;
+            backface-visibility: hidden;
+        }
+
+        .sakura::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 30%, #ffe6f0 0%, #ffcad5 80%);
+            border-radius: inherit;
+            filter: drop-shadow(0 0 3px rgba(255, 202, 213, 0.6));
+        }
+
+        .sakura::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            width: 80%;
+            height: 3px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 50%;
+            transform: translateX(-50%) blur(2px);
+            opacity: 0.3;
+        }
+
+        .sakura.small {
+            width: 6px;
+            height: 5px;
+        }
+        .sakura.medium {
+            width: 10px;
+            height: 8px;
+        }
+        .sakura.large {
+            width: 15px;
+            height: 12px;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translate(0, -10vh) rotate(0deg) scale(0.8);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.8;
+                transform: translate(var(--x-offset), 20vh) rotate(120deg) scale(1);
+            }
+            50% {
+                opacity: 0.9;
+                transform: translate(calc(var(--x-offset) + 10vw), 50vh) rotate(240deg) scale(1.1);
+            }
+            80% {
+                opacity: 0.6;
+                transform: translate(calc(var(--x-offset) - 5vw), 80vh) rotate(320deg) scale(0.9);
+            }
+            100% {
+                transform: translate(var(--x-offset), 100vh) rotate(360deg) scale(0.7);
+                opacity: 0;
+            }
+        }
+
+        /* 所有文字样式完整保留 */
+        .title {
+            font-size: 8vw; 
+            font-weight: 900;
+            color: #ff3333; 
+            text-shadow: 0 0 10px rgba(255, 51, 51, 0.8); 
+            margin-bottom: 20px;
+            text-align: center;
+            z-index: 10; 
+        }
+
+        .service-text {
+            font-size: 2.2vw;
+            color: #f0f0f0;
+            margin: 6px 0;
+            text-align: center;
+            z-index: 10;
+        }
+        .highlight-text {
+            font-size: 2.5vw;
+            color: #ffdddd; 
+            margin: 8px 0;
+            font-weight: 600;
+            z-index: 10;
+            text-align: center;
+        }
+
+        .time {
+            font-size: 2vw;
+            color: #f0f0f0;
+            margin: 30px 0;
+            letter-spacing: 2px;
+            z-index: 10;
+        }
+
+        .music-btn {
+            background-color: #ff3333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+            z-index: 10;
+            margin-bottom: 20px; 
+            display: block;
+        }
+
+        .music-btn:hover {
+            opacity: 1;
+        }
+
+        .copyright {
+            font-size: 14px;
+            color: #999; 
+            text-align: center;
+            z-index: 10;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 15vw;
+            }
+            .service-text {
+                font-size: 5vw;
+                margin: 8px 0;
+            }
+            .highlight-text {
+                font-size: 6vw;
+                margin: 10px 0;
+            }
+            .time {
+                font-size: 5vw;
+            }
+            .copyright {
+                font-size: 12px;
+            }
+            .music-btn {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sakura-container" id="sakuraContainer"></div>
+
+    <!-- 完整文字内容区域 -->
+    <div class="title">焚王封禁</div>
+
+    <div class="service-text">全流程合规操作，隐私加密防护</div>
+    <div class="service-text">支持多场景精准处理，成功率100%</div>
+    <div class="highlight-text">高效率高行动，一天之内可关闭</div>
+    <div class="service-text">7×24小时响应，专属顾问一对一跟进</div>
+    <div class="highlight-text">专业关闭TG频道以及个人账户</div>
+    <div class="service-text">频道@fenting777</div>
+
+    <div class="time" id="currentTime"></div>
+
+    <audio id="bgMusic" loop>
+        <source src="音乐文件路径" type="audio/mpeg">
+        您的浏览器不支持音频播放
+    </audio>
+
+    <button class="music-btn" id="playBtn">点击播放音乐</button>
+
+    <div class="copyright">© 2025 焚王封禁 版权所有 | 专业服务保障</div>
+
+    <script>
+        // 樱花生成逻辑
+        const sizes = ['small', 'medium', 'large'];
+        function createSakura() {
+            const container = document.getElementById('sakuraContainer');
+            const sakura = document.createElement('div');
+            sakura.classList.add('sakura');
+
+            const sizeClass = sizes[Math.floor(Math.random() * sizes.length)];
+            sakura.classList.add(sizeClass);
+
+            const startX = Math.random() * 100;
+            sakura.style.left = `${startX}vw`;
+
+            const xOffset = (Math.random() - 0.5) * 150;
+            sakura.style.setProperty('--x-offset', `${xOffset}px`);
+
+            let duration;
+            if (sizeClass === 'small') {
+                duration = Math.random() * 4 + 8;
+            } else if (sizeClass === 'medium') {
+                duration = Math.random() * 6 + 12;
+            } else {
+                duration = Math.random() * 7 + 18;
+            }
+            sakura.style.animationDuration = `${duration}s`;
+
+            container.appendChild(sakura);
+
+            setTimeout(() => {
+                sakura.remove();
+            }, duration * 1000);
+        }
+
+        setInterval(() => {
+            createSakura();
+            if (Math.random() < 0.3) createSakura();
+            if (Math.random() < 0.1) createSakura();
+        }, 200);
+
+        // 时间更新
+        function updateTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const week = ['日', '一', '二', '三', '四', '五', '六'][now.getDay()];
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            const timeStr = `${year}年${month}月${day}日 星期${week} ${hours}:${minutes}:${seconds}`;
+            document.getElementById('currentTime').textContent = timeStr;
+        }
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // 音乐控制
+        const audio = document.getElementById('bgMusic');
+        const playBtn = document.getElementById('playBtn');
+        playBtn.addEventListener('click', () => {
+            audio.play().then(() => {
+                playBtn.style.display = 'none'; 
+            }).catch(err => {
+                console.log('播放需用户主动交互，可再次点击按钮', err);
+            });
+        });
+    </script>
+</body>
+  </html>
